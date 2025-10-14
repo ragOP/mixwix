@@ -449,7 +449,7 @@ export default function Chatbotdq3() {
         onClick={() => smoothScrollToTop(1000, 432)}
         style={{ cursor: hideMain ? "default" : "pointer" }}
       >
-        <p style={{ fontSize: "1.3em", margin: 0 }}>Seniors Benefits Hub</p>
+        <p style={{ fontSize: "1.3em", margin: 0 }}>Boost Benefits Hub</p>
       </div>
 
       {/* Live counter — hidden when status OR congrats */}
