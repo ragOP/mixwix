@@ -44,7 +44,7 @@ export default function Chatbot() {
   const sendRingbaTag = (tagValue) => {
     try {
       // Common custom events via dataLayer
-      pushDataLayer("ringba_age_tag", { tagValue });
+      pushDataLayer("age", { tagValue });
 
       // Known Ringba-style queues/surfaces (try-catch safe fallbacks)
       if (window.ringba?.api?.setTags) {
@@ -69,7 +69,7 @@ export default function Chatbot() {
   // NewsBreak tag sender with multiple fallbacks
   const sendNewsbreakTag = (tagValue) => {
     try {
-      pushDataLayer("newsbreak_age_tag", { tagValue });
+      pushDataLayer("newsbreak_cid", { tagValue });
 
       // Common NB pixel queue
       // If NB pixel is installed it often provides a queue function `nbq`
