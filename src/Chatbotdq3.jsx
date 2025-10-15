@@ -602,7 +602,7 @@ export default function Chatbotdq3() {
       </div>
 
       {/* NB chip (small debug toast) */}
-      <div id="nb-chip">NB: raw_call sent</div>
+      {/* <div id="nb-chip">NB: raw_call sent</div> */}
     </>
   );
 }
