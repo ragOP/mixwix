@@ -1,15 +1,7 @@
 // index.jsx
 import React, { useEffect, useRef, useState } from "react";
 
-/**
- * Single-file React page (no external tags/CDNs).
- * Changes per your request:
- * - The HEADER is ALWAYS visible.
- * - No loading screen at all (removed image flash + references).
- * - During "Verifying Eligibility..." → scroll to top, show ONLY header + status (everything else hidden).
- * - During "Congratulations" → scroll to top, show ONLY header + congratulations (everything else hidden).
- * - After congrats, the page is locked (only the Call CTA remains interactive).
- */
+
 
 export default function Chatbotdq3() {
   // ==== GLOBAL SAFETIES ====
@@ -18,20 +10,22 @@ export default function Chatbotdq3() {
     window.__nb_events = window.__nb_events || [];
   }
 
-  // ====== State & refs ======
-  const [quizQuestion, setQuizQuestion] = useState("1. Are you over the age of 64?");
+  // ====== Flow state ======
+  const [quizStep, setQuizStep] = useState(1);
+  const [quizQuestion, setQuizQuestion] = useState("1. What's Your Age Range?");
   const [showStatus, setShowStatus] = useState(false);
   const [showCongrats, setShowCongrats] = useState(false);
   const [locked, setLocked] = useState(false); // lock interactions after congrats
 
+  // ====== Counters & misc ======
   const [counter, setCounter] = useState(22563);
   const [claim, setClaim] = useState(72);
-
   const [minutes, setMinutes] = useState(2);
   const [seconds, setSeconds] = useState(52);
   const timerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Desktop vs mobile logo switch
   useEffect(() => {
     const checkSize = () => setIsMobile(window.innerWidth < 768);
     checkSize();
@@ -42,7 +36,7 @@ export default function Chatbotdq3() {
   // When status OR congrats is visible, we hide everything except the header + that block
   const hideMain = showStatus || showCongrats;
 
-  // ====== CSS (your stylesheet + tiny additions for NB chip) ======
+  // ====== CSS (full stylesheet) ======
   const styles = `
   html {
     font-size: 0.5vw;
@@ -56,8 +50,8 @@ export default function Chatbotdq3() {
     background-image: url('./17580.jpg');
     line-height: 1.4;
   }
-  .div2 img { width: 4em; }
-  .div5 { display: none !important; }
+
+  /* --- Header --- */
   .div1 {
     background: linear-gradient(90deg, #003f91, #006cb8);
     color: white;
@@ -68,8 +62,13 @@ export default function Chatbotdq3() {
     letter-spacing: 0.05em;
     width: 100%;
     border-top: 0.2em solid #1e3a8a;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
   }
-  .div1 > img { width: 20%; object-fit: cover; }
+  .div1 > p { margin: 0; }
+
+  /* --- Live counter strip --- */
   .div2 {
     background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
     color: white;
@@ -85,7 +84,6 @@ export default function Chatbotdq3() {
     border-top: 0.15em solid #15803d;
     flex-wrap: wrap;
     word-break: break-word;
-    text-align: center;
   }
   .div3 {
     width: 0.6em;
@@ -100,10 +98,13 @@ export default function Chatbotdq3() {
     50% { opacity: 0.7; transform: scale(1.2); box-shadow: 0 0 1em rgba(34, 197, 94, 1); }
   }
   #counter { font-weight: 800; font-style: italic; }
+  .div5 { display: none !important; } /* generic 'hide' */
+
+  /* --- Main container --- */
   .div6 { width: 100%; margin: 0; padding: 0em 20%; border-top: 0.1em solid #e5e7eb; }
   .div7 { width: 100%; margin: 0; padding: 0; }
   .div8 {
-    padding: 0.5em 1em 1em 1em;
+    padding: 0.5em 1em 0.8em 1em;
     text-align: center;
     font-size: 4.3em;
     font-weight: 900;
@@ -115,14 +116,14 @@ export default function Chatbotdq3() {
     max-width: 100em;
     height: auto;
     display: block;
-    margin: 0 auto;
+    margin: 0.6em auto 0.2em auto;
     border-radius: 0.5em;
     object-fit: cover;
   }
   .div10 {
     padding: 1em 1.5em;
     text-align: center;
-    font-size: 2.5em;
+    font-size: 2.2em;
     font-weight: 900;
     color: #374151;
     line-height: 1.5;
@@ -130,17 +131,25 @@ export default function Chatbotdq3() {
   .arrow-section { text-align: center; padding: 1em 0 1.5em 0; color: #6b7280; }
   .arrow-section i { font-size: 2.8em; animation: bounce 2s infinite; }
   @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-0.3em); } 60% { transform: translateY(-0.15em); } }
+
   .div11 { background: #f1f5f9; padding: 0.1em; width: 100%; }
   .div12 {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     color: white; font-size: 2.3em; font-weight: 500; padding: 1em 0.5em; border-radius: 0.8em; text-align: center; margin: 0.3em;
     box-shadow: 0 0.3em 0 #16a34a; letter-spacing: 0.05em;
   }
+
+  /* --- Quiz card --- */
   .div13 {
-    background: #ebebeb; padding: 0.5em 1.5em 0.5em 1.5em; border-radius: 0.9em; width: 100%;
+    background: #ebebeb;
+    padding: 0.8em 1.2em 1.2em 1.2em;
+    border-radius: 0.9em;
+    width: 100%;
   }
-  .div14 { text-align: center; padding: 0.2em 0 0.5em 0; font-size: 4.8em; font-weight: 700; color: #1f2937; }
+  .div14 { text-align: center; padding: 0.2em 0 0.5em 0; font-size: 3.2em; font-weight: 700; color: #1f2937; }
+
   .div15 { display: flex; flex-direction: column; gap: 0.8em; margin-bottom: 1.2em; }
+
   :root { --anim-4: scaleUp 2s infinite; }
   @keyframes scaleUp { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
   .glow {
@@ -154,20 +163,25 @@ export default function Chatbotdq3() {
     animation: shimmer 2s infinite;
   }
   @keyframes shimmer { 0% { left: -75%; } 100% { left: 125%; } }
+
   .div16 {
     background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
-    color: white; padding: 1em; border-radius: 2.5em; text-align: center; font-size: 2.8em; font-weight: 700;
+    color: white; padding: 1em; border-radius: 2.5em; text-align: center; font-size: 2.2em; font-weight: 700;
     cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 0.3em 0.6em rgba(22, 163, 74, 0.3);
     animation: scaleUp 2s infinite; max-width: 95%; width: 100%; margin: 0.3em auto; transition: all 0.3s ease;
+    user-select: none;
   }
-  .div16:hover { transform: translateY(-0.1em); box-shadow: 0 0.4em 0.8em rgba(22, 163, 74, 0.4); background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); }
+  .div16:hover { transform: translateY(-0.1em); box-shadow: 0 0.5em 1em rgba(22, 163, 74, 0.4); background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); }
   .div16:active { transform: translateY(0); box-shadow: 0 0.2em 0.4em rgba(22, 163, 74, 0.3); }
-  .div17 { display: flex; align-items: center; justify-content: center; gap: 0.5em; font-size: 2.3em; color: #374151; font-weight: 600; }
+
+  .div17 { display: flex; align-items: center; justify-content: center; gap: 0.5em; font-size: 2.1em; color: #374151; font-weight: 600; }
   .div18 {
     width: 0.5em; height: 0.5em; background: #22c55e; border-radius: 50%;
     animation: pulse 1.5s ease-in-out infinite; box-shadow: 0 0 0.3em rgba(34, 197, 94, 0.8);
   }
   #claim { color: #16a34a; font-weight: 800; }
+
+  /* --- Status & Congrats blocks --- */
   .div4 {
     background: #e9f2ff; color: #1f2937; text-align: center; padding: 3em 1em; margin: 3em 18%;
     font-size: 1.2em; font-weight: 700; border-top: 0.2em solid #2196f3;
@@ -186,32 +200,33 @@ export default function Chatbotdq3() {
   }
   .div22 {
     background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
-    color: white; text-align: center; font-size: 3.5em; font-weight: 700; padding: 1.2em; border-radius: 0.8em; margin: 1em 1em;
+    color: white; text-align: center; font-size: 3.2em; font-weight: 800; padding: 1.1em; border-radius: 0.8em; margin: 1em 1em;
     cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0.4em 0.8em rgba(22, 163, 74, 0.3);
     text-decoration: none; display: block; animation: glow 1.5s ease-in-out infinite;
   }
   @keyframes glow {
     0%, 100% { opacity: 1; box-shadow: 0 0 0.5em rgba(34, 197, 94, 0.8); }
-    50% { opacity: 0.8; box-shadow: 0 0 1em rgba(34, 197, 94, 1); }
+    50% { opacity: 0.85; box-shadow: 0 0 1em rgba(34, 197, 94, 1); }
   }
-  .div22 a { color: inherit; text-decoration: none; }
   .div22:hover { transform: translateY(-0.1em); box-shadow: 0 0.5em 1em rgba(22, 163, 74, 0.4); }
   .div23 { text-align: center; font-size: 1.9em; color: #374151; margin: 1.5em 1em; line-height: 1.4; font-weight: 500; }
   .div24 {
     display: flex; justify-content: center; align-items: center; gap: 0.1em; font-size: 2.2em; font-weight: 900; color: #dc2626;
-    border: 0.08em dashed #dc2626; margin: 1.5em 0; width: fit-content; margin: 0 auto; padding: 0.2em 0.35em;
+    border: 0.08em dashed #dc2626; margin: 1.2em auto; width: fit-content; padding: 0.1em 0.35em;
   }
   .div25 {
     background: transparent; border-radius: 0.15em; text-align: center; color: #dc2626;
-    font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 1em; min-width: 1.4em;
   }
+
+  /* --- Footer (hidden on status/congrats) --- */
   .div26 {
     color: #374151; padding: 2.5em 20%; font-size: 2em; line-height: 1.6; text-align: center; width: 100%; margin-top: 10em;
   }
   .div27 { margin: 1em 0; display: flex; justify-content: center; gap: 0.5em; flex-wrap: wrap; }
   .div27 a { color: #374151; text-decoration: none; }
   .div27 a:hover { text-decoration: underline; }
-  .div99{ }
+
   /* NB chip */
   #nb-chip {
     position: fixed; right: 12px; bottom: 12px; z-index: 99999; padding: 8px 12px;
@@ -221,65 +236,26 @@ export default function Chatbotdq3() {
 
   @media (max-width: 48em) {
     html { font-size: 3vw; }
-    .div1 { font-size: 0.5em; }
-    .div1 > img { width: 60%; }
-    .div2 { font-size: 1em; }
+    .div1 { font-size: 1em; }
+    .div2 { font-size: 1.2em; padding: 0.7em 0.6em; }
     .div6 { padding: 0em 5%; }
-    .div8 { font-size: 2.1em; padding: 1em 0.8em 0.8em 0.8em; }
-    .div10 { font-size: 1.15em; padding: 0.8em 1em; }
-    .arrow-section { font-size: 1em; }
-    .arrow-section i { font-size: 2.6em; }
-    .div12 { font-size: 1.1em; }
-    .div13 { padding: 0.4em 1em 1em 1em; }
-    .div14 { font-size: 1.6em; padding: 0.4em 0 0.8em 0; }
+    .div8 { font-size: 2.2em; padding: 1em 0.8em 0.8em 0.8em; }
+    .div10 { font-size: 1.2em; padding: 0.7em 0.8em; }
+    .div12 { font-size: 1.2em; }
+    .div13 { padding: 0.6em 0.9em 0.9em 0.9em; }
+    .div14 { font-size: 1.8em; }
     .div16 { font-size: 1.5em; padding: 0.8em; }
-    .div17 { font-size: 1.1em; }
-    .div15 { gap: 0.6em; }
-    .div4 { font-size: 1em; padding: 1.5em 0.5em; margin: 1em 5%; }
+    .div17 { font-size: 1.2em; }
+    .div4 { font-size: 1em; padding: 1.5em 0.8em; margin: 1em 5%; }
     #statusMessage { font-size: 1.5em; }
     #congratulations.div4 { margin: 1em 5%; }
-    .div19 { font-size: 1.8em; }
-    .div20 { font-size: 1.7em; margin-top: 0.7em; }
-    .div21 { font-size: 1.5em; margin: 0.5em 0.1em; }
-    .div22 { font-size: 2em; }
-    .div23 { font-size: 1.5em; }
-    .div24 { font-size: 2em; }
+    .div19 { font-size: 1.9em; }
+    .div20 { font-size: 1.6em; margin-top: 0.6em; }
+    .div21 { font-size: 1.4em; margin-top: 0.4em; }
+    .div22 { font-size: 1.8em; }
+    .div23 { font-size: 1.3em; }
+    .div24 { font-size: 1.7em; }
     .div26 { font-size: 1.1em; padding: 1em 5%; }
-  }
-  @media (max-width: 30em) {
-    html { font-size: 3vw; }
-    .div8 { padding: 0.8em 0.6em; }
-    .div10 { font-size: 1.2em; padding: 0.6em 0.1em; }
-    .div12 { font-size: 1.1em; }
-    .div13 { padding: 0.3em 0.8em 0.8em 0.8em; }
-    .div14 { font-size: 2em; padding: 0.5em 0; }
-    .div16 { font-size: 2.2em; padding: 0.7em; }
-    .div1 { font-size: 1em; padding: 0.5em; }
-  }
-  @media (max-width: 20em) {
-    html { font-size: 3vw; }
-    .div8 { font-size: 1.5em; padding: 0.6em 0.4em; }
-    .div10 { font-size: 1.2em; padding: 0.5em 0.6em; }
-    .div16 { font-size: 1.3em; padding: 0.6em; }
-    .div13 { padding: 0.2em 0.6em 0.6em 0.6em; }
-    .div15 { gap: 0.4em; }
-    .div24 { font-size: 1.5em; }
-  }
-  @media (max-width: 10em) {
-    html { font-size: 3.5vw; }
-    .div8 { font-size: 1.5em; padding: 0.4em 0.3em; }
-    .div10 { font-size: 1em; padding: 0.4em 0.5em; }
-    .div12 { font-size: 0.9em; }
-    .div13 { padding: 0.2em 0.4em 0.5em 0.4em; }
-    .div14 { font-size: 1.2em; padding: 0.6em 0; }
-    .div15 { gap: 0.3em; }
-    .div16 { font-size: 1em; padding: 0.5em; border-radius: 1.5em; }
-    .div1 { font-size: 0.8em; padding: 0.6em; }
-    .div2 { font-size: 0.7em; padding: 0.5em 1em; }
-    .div16 { font-size: 1.3em; }
-    .div22 { font-size: 1.5em; }
-    .div24 { font-size: 1.2em; }
-    .div25 { padding: 0.2em 0.3em; min-width: 0.8em; }
   }
   `;
 
@@ -339,21 +315,37 @@ export default function Chatbotdq3() {
     }
   };
 
-  // Ringba queue-only (no external script)
-  const RINGBA_AGE_KEY = "age"; // change to 'Age' if needed
+  // ====== Ringba queue-only (no external script) ======
+  const RINGBA_AGE_KEY = "age";           // change to 'Age' if your Ringba expects capitalized
+  const RINGBA_MEDICARE_KEY = "ab"; // key for Medicare Part A/B selection
+
+  // Helper to push a tag to Ringba queue with optional newsbreak_cid
+  function pushRingbaTag(tagObj) {
+    try {
+      const withCid = { ...tagObj };
+      if (typeof window !== "undefined" && window.newsbreak_cid) {
+        withCid.newsbreak_cid = window.newsbreak_cid;
+      }
+      window._rgba_tags.push(withCid);
+      console.log("[Ringba] pushed:", withCid, "→ _rgba_tags:", window._rgba_tags);
+    } catch (e) {
+      console.warn("[Ringba] push failed", e);
+    }
+  }
+
+  // Age tag
   const rbAge = (value) => {
     if (locked || hideMain) return; // stop pushes during/after status/congrats
-    try {
-      const tag = {};
-      tag[RINGBA_AGE_KEY] = value;
-      window._rgba_tags.push(tag);
-      console.log("[Ringba] pushed age:", tag, "→ _rgba_tags:", window._rgba_tags);
-    } catch (e) {
-      console.warn("[Ringba] age push failed", e);
-    }
+    pushRingbaTag({ [RINGBA_AGE_KEY]: value });
   };
 
-  // ====== Counters ======
+  // Medicare A/B tag
+  const rbMedicare = (value) => {
+    // value should be "yes" or "no"
+    pushRingbaTag({ [RINGBA_MEDICARE_KEY]: value });
+  };
+
+  // ====== Animated counters ======
   useEffect(() => {
     const id = setInterval(() => setCounter((p) => p + (Math.floor(Math.random() * 3) + 1)), 3000);
     return () => clearInterval(id);
@@ -377,29 +369,17 @@ export default function Chatbotdq3() {
     return () => window.removeEventListener("load", onLoad);
   }, []);
 
-  // ====== Flow ======
-  const setYesNoOptions = () => setQuizQuestion("2. Are you a U.S. Citizen?");
-
-  const handleQuizP = (ageValue) => {
-    if (locked || hideMain) return;
-    if (ageValue) rbAge(ageValue);
-    if (quizQuestion === "1. Are you over the age of 64?") {
-      setYesNoOptions();
-      smoothScrollToTop(1000, 432);
-    } else {
-      stepProcess("yes");
-    }
+  // ====== Flow functions ======
+  const updateToCitizenStep = () => {
+    setQuizStep(2);
+    setQuizQuestion("2. Are you a U.S. Citizen?");
+    smoothScrollToTop(900, 432);
   };
 
-  const handleQuizN = (ageValue) => {
-    if (locked || hideMain) return;
-    if (ageValue) rbAge(ageValue);
-    if (quizQuestion === "1. Are you over the age of 64?") {
-      setYesNoOptions();
-      smoothScrollToTop(1000, 632);
-    } else {
-      stepProcess("no");
-    }
+  const updateToMedicareStep = () => {
+    setQuizStep(3);
+    setQuizQuestion("3. Are You Currently Enrolled in Medicare Part A or Part B?");
+    smoothScrollToTop(900, 532);
   };
 
   const stepProcess = () => {
@@ -446,7 +426,34 @@ export default function Chatbotdq3() {
 
   useEffect(() => () => timerRef.current && clearInterval(timerRef.current), []);
 
+  // ====== Quiz handlers ======
+  // Step 1 (Age) buttons call this and push Ringba age tag
+  const handleAgeSelect = (ageValue) => {
+    if (locked || hideMain) return;
+    rbAge(ageValue);
+    updateToCitizenStep();
+  };
+
+  // Step 2: Citizen (yes/no)
+  const handleCitizen = (answer) => {
+    if (locked || hideMain) return;
+    // (Add a tag here if you ever need it)
+    updateToMedicareStep();
+  };
+
+  // Step 3: Medicare (yes/no) → push Ringba 'ab' + proceed
+  const handleMedicare = (answer) => {
+    if (locked || hideMain) return;
+    // normalize to lowercase "yes"/"no"
+    const norm = String(answer).toLowerCase() === "yes" ? "yes" : "no";
+    rbMedicare(norm);
+    stepProcess();
+  };
+
   // ====== Render ======
+  const displayNumber = "(323) 689-7861"; // display-friendly
+  const telNumber = "+13236897861";       // tel: href
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
@@ -487,7 +494,6 @@ export default function Chatbotdq3() {
           <img
             className="div9"
             src="./card.png"
-            // src="data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='1000' height='420'><rect width='100%' height='100%' fill='%23e9f5ee'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2377a' font-size='42'>Your Image Here</text></svg>"
             alt="Hero"
             onClick={() => smoothScrollToTop(1000, 432)}
             style={{ cursor: hideMain ? "default" : "pointer" }}
@@ -506,25 +512,34 @@ export default function Chatbotdq3() {
 
         <div className="div13">
           <div className="div14">
-            <span id="quizQuestion">
-              {quizQuestion === "1. Are you over the age of 64?" ? "1. What's Your Age Range?" : quizQuestion}
-            </span>
+            <span id="quizQuestion">{quizQuestion}</span>
           </div>
 
-          <div className="div15" id="answerOptions">
-            {quizQuestion === "1. Are you over the age of 64?" ? (
-              <>
-                <div className="div16 glow shimmer" onClick={() => handleQuizP("Under 65")}>Under 65</div>
-                <div className="div16 glow shimmer" onClick={() => handleQuizN("65-80")}>65-80</div>
-                <div className="div16 glow shimmer" onClick={() => handleQuizP("Over 80")}>Over 80</div>
-              </>
-            ) : (
-              <>
-                <div className="div16 glow shimmer" onClick={() => stepProcess("yes", "Above-25K")}>Yes</div>
-                <div className="div16 glow shimmer" onClick={() => stepProcess("no", "No")}>No</div>
-              </>
-            )}
-          </div>
+          {/* STEP 1: Age range */}
+          {quizStep === 1 && (
+            <div className="div15" id="answerOptions">
+              <div className="div16 glow shimmer" onClick={() => handleAgeSelect("Under 64")}>Under 64</div>
+              <div className="div16 glow shimmer" onClick={() => handleAgeSelect("64-69")}>64-69</div>
+              <div className="div16 glow shimmer" onClick={() => handleAgeSelect("70-74")}>70-74</div>
+              <div className="div16 glow shimmer" onClick={() => handleAgeSelect("75+")}>75+</div>
+            </div>
+          )}
+
+          {/* STEP 2: U.S. Citizen */}
+          {quizStep === 2 && (
+            <div className="div15" id="answerOptions">
+              <div className="div16 glow shimmer" onClick={() => handleCitizen("yes")}>Yes</div>
+              <div className="div16 glow shimmer" onClick={() => handleCitizen("no")}>No</div>
+            </div>
+          )}
+
+          {/* STEP 3: Medicare A/B */}
+          {quizStep === 3 && (
+            <div className="div15" id="answerOptions">
+              <div className="div16 glow shimmer" onClick={() => handleMedicare("yes")}>Yes</div>
+              <div className="div16 glow shimmer" onClick={() => handleMedicare("no")}>No</div>
+            </div>
+          )}
 
           <div className="div17">
             <div className="div18" />
@@ -549,19 +564,19 @@ export default function Chatbotdq3() {
 
         {/* CTA anchor — active even after locked */}
         <a
-          href="tel:+13236897861"
+          href={`tel:${telNumber}`}
           id="callLink"
           className="div22 glow shimmer"
           onPointerDown={fireNbRawCall}
           onClick={fireNbRawCall}
         >
-          CALL (321) 485-8035
+          CALL {displayNumber}
         </a>
 
         <div className="div23">
           Due to high call volume, your official agent is waiting for only <strong>3 minutes</strong>, then your spot will not be reserved.
         </div>
-        <div className="div24">
+        <div className="div24" aria-live="polite">
           <div className="div25" id="minutes">{minutes}</div>
           <div className="div25">:</div>
           <div className="div25" id="seconds">{seconds}</div>
@@ -570,21 +585,24 @@ export default function Chatbotdq3() {
 
       {/* Footer — hidden when status OR congrats */}
       <div className={`div26 ${hideMain ? "div5" : ""}`}>
-    <img
-      src={isMobile ? "./dis-mobile.png" : "./dis-desktop.png"}
-      alt="Logo"
-      style={{ width: "auto", marginBottom: "0.5em" }}
-    />
-        
-                Beware of other fraudulent &amp; similar-looking websites that might look exactly like ours, we have no affiliation with them.
+        <img
+          src={isMobile ? "./dis-mobile.png" : "./dis-desktop.png"}
+          alt="Logo"
+          style={{ width: "auto", marginBottom: "0.5em" }}
+        />
+        This website is operated by a marketing and lead generation company. We are not a government agency, insurance provider, or financial institution.
+        Our role is to connect consumers with licensed professionals, carriers, or service providers who can discuss available options. We do not make eligibility
+        determinations or provide coverage, financing, or government benefits directly.
+        <br /><br />
+        Beware of other fraudulent &amp; similar-looking websites that might look exactly like ours, we have no affiliation with them.
         This is the only official website to claim your Spending Allowance Benefit with the domain name seniorsbenefitshub.com
         <div className="div27">
           <a href="/terms.html">Terms &amp; Conditions</a> | <a href="/privacy.html">Privacy Policy</a>
         </div>
       </div>
 
-      {/* NB chip */}
-      {/* <div id="nb-chip">NB: raw_call sent</div> */}
+      {/* NB chip (small debug toast) */}
+      <div id="nb-chip">NB: raw_call sent</div>
     </>
   );
 }
