@@ -467,17 +467,7 @@ export default function Chatbotdq3() {
         <p style={{ fontSize: "1.3em", margin: 0 }}>Boost Benefits Hub</p>
       </div>
 
-      {/* Live counter — hidden when status OR congrats */}
-      <div
-        className={`div2 ${hideMain ? "div5" : ""}`}
-        onClick={() => smoothScrollToTop(1000, 432)}
-        style={{ cursor: hideMain ? "default" : "pointer" }}
-      >
-        <span className="div3" aria-hidden="true" />
-        <span>
-          <strong id="counter">{counter.toLocaleString()}</strong> Seniors Enrolled In Last 24 Hours!
-        </span>
-      </div>
+   
 
       {/* Hero / Quiz — hidden when status OR congrats */}
       <div className={`div6 ${hideMain ? "div5" : ""}`}>
@@ -541,10 +531,7 @@ export default function Chatbotdq3() {
             </div>
           )}
 
-          <div className="div17">
-            <div className="div18" />
-            <span><em><span id="claim">{claim}</span> People Are Claiming Right Now!</em></span>
-          </div>
+          
         </div>
       </div>
 
