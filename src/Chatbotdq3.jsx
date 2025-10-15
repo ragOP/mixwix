@@ -595,7 +595,7 @@ export default function Chatbotdq3() {
         determinations or provide coverage, financing, or government benefits directly.
         <br /><br />
         Beware of other fraudulent &amp; similar-looking websites that might look exactly like ours, we have no affiliation with them.
-        This is the only official website to claim your Spending Allowance Benefit with the domain name seniorsbenefitshub.com
+        This is the only official website to claim your Spending Allowance Benefit with the domain name boostbenefitshub.com
         <div className="div27">
           <a href="/terms.html">Terms &amp; Conditions</a> | <a href="/privacy.html">Privacy Policy</a>
         </div>
