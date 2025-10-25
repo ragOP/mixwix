@@ -10,7 +10,8 @@ import Chatbotdq3 from './Chatbotdq3';
 import Chatbotdq4 from './Chatbotdq4';
 import Home from './Home';
 import Chatbot2 from './Chatbot2';
-import Raghib from './Raghibnajmi;
+import Raghib from './raghibnajmi';
+
 
 const App = () => {
   // sds
