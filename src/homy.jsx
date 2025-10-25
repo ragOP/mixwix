@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "./assets/card.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-export default function Eng() {
+export default function Homy() {
   // ==== GLOBAL SAFETIES ====
   if (typeof window !== "undefined") {
     window._rgba_tags = window._rgba_tags || [];
@@ -598,8 +598,10 @@ export default function Eng() {
         determinations or provide coverage, financing, or government benefits directly.
         <br /><br />
         Beware of other fraudulent &amp; similar-looking websites that might look exactly like ours, we have no affiliation with them.
-        This is the only official website to claim your Spending Allowance Benefit with the domain name livebenefitus.com
-        
+        This is the only official website to claim your Spending Allowance Benefit with the domain name boostbenefitshub.com
+        <br/>
+        Owned and Operated by Blitscale Media Pvt. Ltd. and G2 Licensed Agent : Physicians Mutual Insurance Company
+    
       </div>
 
       {/* NB chip (small debug toast) */}

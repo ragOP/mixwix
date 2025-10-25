@@ -11,14 +11,14 @@ import Chatbotdq4 from './Chatbotdq4';
 import Home from './Home';
 import Chatbot2 from './Chatbot2';
 import Raghib from './raghibnajmi';
-
+import Homy from './homy';
 
 const App = () => {
   // sds
   return (
     <Router>
       <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Homy />} />
         {/* <Route path="/engsf1" element={<Chatbotdq />} />
         <Route path="/engsfdq" element={<Chatbotdq2 />} />
         <Route path="/engsf2200" element={<ChatbotTwo />} /> */}
